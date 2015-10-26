@@ -65,6 +65,7 @@ if (${CMAKE_HOST_UNIX})
             /usr/local/include
             /sw/include
             /opt/local/include
+            /opt/optix/include
             NO_DEFAULT_PATH
             DOC "The directory where optix.h resides"
     )
@@ -80,6 +81,7 @@ if (${CMAKE_HOST_UNIX})
             /usr/local/lib
             /sw/lib
             /opt/local/lib
+            /opt/optix/lib64
             NO_DEFAULT_PATH
             DOC "The optix library")
 endif ()
