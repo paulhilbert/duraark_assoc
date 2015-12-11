@@ -20,7 +20,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions(-Wno-deprecated-declarations)
 endif()
 
-find_package(PCL COMPONENTS common)
+find_package(PCL COMPONENTS common search octree)
 find_package(Boost COMPONENTS program_options date_time iostreams serialization system filesystem regex thread)
 find_package(OPTIX)
 find_package(E57PCL)
