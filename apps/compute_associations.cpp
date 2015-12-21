@@ -53,26 +53,33 @@ assoc_pc_to_pc(cloud_normal_t::Ptr cloud_a, const std::string& name_a,
     write_entity(output, *cloud_entity_a);
     write_entity(output, *cloud_entity_b);
 
+    std::vector<int> all_indices;
+    int index = 0;
+
+    for (const auto& p : *cloud_a) {
+        std::vector<int> indices(1);
+        std::vector<float> dists(1);
+        if (octree.nearestKSearch(p, 1, indices, dists) && dists[0] <= eps*eps) {
+            all_indices.push_back(index);
+        }
+        ++index;
+    }
+
     auto string_type = std::make_shared<literal_type>("xsd:string");
     auto integer_type = std::make_shared<literal_type>("xsd:nonNegativeInteger");
     auto indices_type = std::make_shared<literal_type>("types:indexSet");
-    for (const auto& p : *cloud_a) {
-        std::vector<int> indices;
-        std::vector<float> dists;
-        if (octree.radiusSearch(p, eps, indices, dists)) {
-            entity sub_ent(cloud_entity_a, indices, guid_b);
 
-            write_entity(output, sub_ent);
-            output.print_sentence(statement(uri(sub_ent.name()), uri("rel:pointSubsetOf"),
-                                            uri(sub_ent.parent()->name())));
-            output.print_sentence(statement(uri(sub_ent.name()),
-                                            uri("rel:pointSubsetContains"),
-                                            literal(sub_ent.indices_string(), indices_type)));
-            output.print_sentence(
-                statement(uri(sub_ent.name()), uri("rel:subsetRepOf"),
-                          literal(sub_ent.representation_of(), string_type)));
-        }
-    }
+    entity sub_ent(cloud_entity_a, all_indices, guid_b);
+
+    write_entity(output, sub_ent);
+    output.print_sentence(statement(uri(sub_ent.name()), uri("rel:pointSubsetOf"),
+                                    uri(sub_ent.parent()->name())));
+    output.print_sentence(statement(uri(sub_ent.name()),
+                                    uri("rel:pointSubsetContains"),
+                                    literal(sub_ent.indices_string(), indices_type)));
+    output.print_sentence(
+        statement(uri(sub_ent.name()), uri("rel:subsetRepOf"),
+                  literal(sub_ent.representation_of(), string_type)));
 }
 
 void
