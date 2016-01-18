@@ -34,6 +34,7 @@ EXPORT_DECL std::vector<int32_t> associate_points(
     const std::vector<uint32_t> &counts,
     const Eigen::Affine3f &t0 = Eigen::Affine3f::Identity(),
     const Eigen::Affine3f &t1 = Eigen::Affine3f::Identity(),
+    const std::set<std::string> &door_entity_types = std::set<std::string>(),
     const std::set<std::string> &ignore_entity_types = std::set<std::string>());
 
 template <typename PointType, typename ColorType>
@@ -45,6 +46,7 @@ EXPORT_DECL std::vector<int32_t> associate_points(
     const std::vector<uint32_t> &counts,
     const Eigen::Affine3f &t0 = Eigen::Affine3f::Identity(),
     const Eigen::Affine3f &t1 = Eigen::Affine3f::Identity(),
+    const std::set<std::string> &door_entity_types = std::set<std::string>(),
     const std::set<std::string> &ignore_entity_types = std::set<std::string>());
 
 }  // duraark_assoc
