@@ -27,9 +27,10 @@ find_package(E57PCL)
 find_package(DuraarkRDF)
 find_package(OpenMesh)
 find_package(Cartan)
+find_package(PrimitiveDetection)
 
 file (GLOB_RECURSE obj RELATIVE "${PROJECT_SOURCE_DIR}" "src/*.cpp")
-if (Boost_FOUND AND PCL_FOUND AND OPTIX_FOUND AND E57PCL_FOUND AND DURAARKRDF_FOUND AND CARTAN_FOUND)
+if (Boost_FOUND AND PCL_FOUND AND OPTIX_FOUND AND E57PCL_FOUND AND DURAARKRDF_FOUND AND CARTAN_FOUND AND PRIMITIVE_DETECTION_FOUND)
 	include_directories(${Boost_INCLUDE_DIRS})
 	include_directories(${PCL_INCLUDE_DIRS})
 	include_directories(${OPENMESH_INCLUDE_DIRS})
@@ -37,13 +38,25 @@ if (Boost_FOUND AND PCL_FOUND AND OPTIX_FOUND AND E57PCL_FOUND AND DURAARKRDF_FO
 	include_directories(${E57PCL_INCLUDE_DIRS})
 	include_directories(${DURAARKRDF_INCLUDE_DIRS})
 	include_directories(${CARTAN_INCLUDE_DIRS})
+	include_directories(${PRIMITIVE_DETECTION_INCLUDE_DIRS})
 
     add_library(duraark_assoc SHARED ${obj})
     target_link_libraries(duraark_assoc ${Boost_LIBRARIES} ${PCL_LIBRARIES} ${OPTIX_LIBRARIES} ${E57PCL_LIBRARIES} ${DURAARKRDF_LIBRARIES} "dl")
 
     find_package(Boost COMPONENTS program_options date_time iostreams serialization system filesystem regex thread)
     add_executable(compute_associations "${PROJECT_SOURCE_DIR}/apps/compute_associations.cpp")
-    target_link_libraries(compute_associations duraark_assoc ${Boost_LIBRARIES} ${PCL_LIBRARIES} ${OPENMESH_LIBRARIES} ${OPTIX_LIBRARIES} ${E57PCL_LIBRARIES} ${DURAARKRDF_LIBRARIES} ${CARTAN_LIBRARIES} "dl")
+    target_link_libraries(compute_associations
+        duraark_assoc
+        ${Boost_LIBRARIES}
+        ${PCL_LIBRARIES}
+        ${OPENMESH_LIBRARIES}
+        ${OPTIX_LIBRARIES}
+        ${E57PCL_LIBRARIES}
+        ${DURAARKRDF_LIBRARIES}
+        ${CARTAN_LIBRARIES}
+        ${PRIMITIVE_DETECTION_LIBRARIES}
+        "dl"
+    )
 
 	# install binary
     install (TARGETS duraark_assoc DESTINATION lib)

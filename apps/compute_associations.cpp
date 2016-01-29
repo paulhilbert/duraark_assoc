@@ -90,15 +90,16 @@ assoc_pc_to_ifc(cloud_normal_t::Ptr cloud,
                 const std::vector<uint32_t>& scan_sizes,
                 const duraark_assoc::ifc_objects_t<OpenMesh::Vec4f>& objects,
                 turtle_output& output, const Eigen::Matrix4f& reg, float eps) {
+    std::set<std::string> door_entity_types;
+    door_entity_types.insert("ifcdoor");
     std::set<std::string> ignored_entity_types;
-    ignored_entity_types.insert("ifcdoor");
     std::vector<uint32_t> possible(objects.size()), actual(objects.size());
     Eigen::Affine3f t0, t1 = Eigen::Affine3f::Identity();
     t0 = reg;
     auto assoc =
         duraark_assoc::associate_points<point_normal_t, OpenMesh::Vec4f>(
-            objects, cloud, eps, possible, actual, scan_origins, scan_sizes, t0,
-            t1, ignored_entity_types);
+            objects, cloud, eps, possible, actual, scan_origins, scan_sizes, t1,
+            t0, door_entity_types, ignored_entity_types);
 
     entity::sptr_t cloud_entity = std::make_shared<entity>(
         entity::type_t::PC, name_pc, guid_pc);
@@ -212,7 +213,7 @@ main(int argc, char const* argv[]) {
 
         if (file_reg != "") {
             duraark_rdf::turtle_input input(file_reg);
-            reg = duraark_rdf::parse_registration(input, guid_ifc, guid_pc);
+            reg = duraark_rdf::parse_registration(input, guid_pc, guid_ifc);
         }
 
         assoc_pc_to_ifc(cloud, name_pc, guid_pc, scan_origins, scan_sizes, objects, output,
